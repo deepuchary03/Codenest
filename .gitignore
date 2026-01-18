@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Environment variables
+.env
+
+# Build files
+client/build/
+dist/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.temp
+
+
+ARCHITECTURE_DIAGRAM.md
+BUILD_COMPLETE.md
+DEVELOPMENT.md
+MIGRATION_GUIDE.md
+QUICKSTART.md
+README.md
+REFACTORING_COMPLETE.md
+SETUP.md
+START_HERE.md
+VISUAL_OVERVIEW.md
