@@ -5,6 +5,7 @@ This repository uses GitHub Actions for continuous integration and deployment.
 ## Workflows
 
 ### 1. CI - Build and Test (`.github/workflows/ci.yml`)
+
 - Runs on every push and pull request
 - Installs dependencies
 - Lints code
@@ -12,6 +13,7 @@ This repository uses GitHub Actions for continuous integration and deployment.
 - Runs tests
 
 ### 2. Deploy (`.github/workflows/deploy.yml`)
+
 - Runs on push to `main` or `master` branch
 - Builds and tests the application
 - Deploys backend to Render (automatic via Render's GitHub integration)
@@ -22,15 +24,18 @@ This repository uses GitHub Actions for continuous integration and deployment.
 Go to your GitHub repository → Settings → Secrets and variables → Actions, and add:
 
 ### Required Secrets:
+
 - `VITE_API_URL` - Your backend API URL (e.g., `https://codenest-1-meva.onrender.com/api`)
 
 ### Optional Secrets (depending on frontend hosting):
 
 #### For Netlify:
+
 - `NETLIFY_AUTH_TOKEN` - Your Netlify personal access token
 - `NETLIFY_SITE_ID` - Your Netlify site ID
 
 #### For Vercel:
+
 - `VERCEL_TOKEN` - Your Vercel authentication token
 - `VERCEL_ORG_ID` - Your Vercel organization ID
 - `VERCEL_PROJECT_ID` - Your Vercel project ID
@@ -72,7 +77,7 @@ Update `.github/workflows/deploy.yml` deploy-frontend step:
     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
     working-directory: ./client/dist
-    vercel-args: '--prod'
+    vercel-args: "--prod"
 ```
 
 ### Option 3: GitHub Pages
@@ -117,14 +122,17 @@ Update `.github/workflows/deploy.yml` deploy-frontend step:
 ## Troubleshooting
 
 ### Build fails
+
 - Check if all dependencies are listed in `package.json`
 - Verify Node.js version compatibility (using Node 20)
 
 ### Deployment fails
+
 - Verify all secrets are correctly set
 - Check service connection to GitHub
 - Review logs in Actions tab
 
 ### Environment variables
+
 - Backend: Set in Render Dashboard → Environment
 - Frontend: Set as GitHub Secrets and used in workflow
