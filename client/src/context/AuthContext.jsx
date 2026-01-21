@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import axios from "axios";
+import { api } from "../api/client";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext();
@@ -17,10 +17,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("token"));
 
-  // Configure axios defaults
+  // Configure api defaults
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       loadUser();
     } else {
       setLoading(false);
@@ -29,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async () => {
     try {
-      const response = await axios.get("/api/auth/profile");
+      const response = await api.get("/auth/profile");
       setUser(response.data);
     } catch (error) {
       console.error("Load user error:", error);
@@ -41,26 +40,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      const response = await api.post("/auth/login", { email, password });
       const { token, user } = response.data;
 
       localStorage.setItem("token", token);
       setToken(token);
       setUser(user);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       toast.success(`Welcome back, ${user.username}! 🔥`);
       return true;
     } catch (error) {
-      const message = error.response?.data?.error || "Login failed";
-      toast.error(message);
+      const message = error?.error || error?.message || "Login failed";
+      toast.error(typeof message === 'string' ? message : JSON.stringify(message));
       return false;
     }
   };
 
   const register = async (username, email, password) => {
     try {
-      const response = await axios.post("/api/auth/register", {
+      const response = await api.post("/auth/register", {
         username,
         email,
         password,
@@ -70,13 +68,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", token);
       setToken(token);
       setUser(user);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       toast.success(`Welcome to CodeNest, ${user.username}! 🚀`);
       return true;
     } catch (error) {
-      const message = error.response?.data?.error || "Registration failed";
-      toast.error(message);
+      const message = error?.error || error?.message || "Registration failed";
+      toast.error(typeof message === 'string' ? message : JSON.stringify(message));
       return false;
     }
   };
@@ -85,7 +82,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
-    delete axios.defaults.headers.common["Authorization"];
     toast.success("Logged out successfully");
   };
 
