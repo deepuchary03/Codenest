@@ -1,0 +1,73 @@
+name: Deploy CodeNest
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install root dependencies
+      run: npm install
+
+    - name: Install server dependencies
+      run: cd server && npm install
+
+    - name: Install client dependencies
+      run: cd client && npm install
+
+    - name: Build client
+      run: cd client && npm run build
+      env:
+        VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+    - name: Upload client build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: client-build
+        path: client/dist
+
+  deploy-backend:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+    - name: Deploy to Render
+      run: |
+        echo "Backend deploys automatically via Render's GitHub integration"
+        echo "Make sure your Render service is connected to this repository"
+
+  deploy-frontend:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: client-build
+        path: client/dist
+
+    - name: Deploy to Netlify (or your hosting)
+      run: |
+        echo "Add your deployment commands here"
+        echo "For Netlify: npx netlify-cli deploy --prod --dir=client/dist"
+        echo "For Vercel: npx vercel --prod client/dist"

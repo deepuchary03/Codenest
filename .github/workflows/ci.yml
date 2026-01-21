@@ -1,0 +1,47 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        npm install
+        cd server && npm install
+        cd ../client && npm install
+
+    - name: Lint server code
+      run: cd server && npm run lint || echo "No lint script configured"
+      continue-on-error: true
+
+    - name: Lint client code
+      run: cd client && npm run lint || echo "No lint script configured"
+      continue-on-error: true
+
+    - name: Build client
+      run: cd client && npm run build
+      env:
+        VITE_API_URL: https://codenest-1-meva.onrender.com/api
+
+    - name: Run tests
+      run: |
+        echo "Add your test commands here"
+        # cd server && npm test
+        # cd client && npm test
+      continue-on-error: true
