@@ -7,6 +7,9 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy - required for rate limiting behind proxies like Render/Vercel
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
