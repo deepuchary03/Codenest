@@ -16,5 +16,5 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     return Promise.reject(err.response?.data || err.message);
-  }
+  },
 );

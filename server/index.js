@@ -64,7 +64,7 @@ const PORT = process.env.PORT || 5000;
 module.exports = app;
 
 // Only start server if not in serverless environment
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 CodeNest Server running on port ${PORT}`);
   });
